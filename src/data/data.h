@@ -15,6 +15,7 @@
 namespace constants {
     constexpr uint32_t SCREEN_WIDTH = 64;
     constexpr uint32_t SCREEN_HEIGHT = 32;
+    constexpr uint32_t SCALE = 10;
     constexpr uint32_t MEMORY_SIZE = 4096;
     constexpr uint32_t PC_START = 0x200;
     constexpr uint64_t P_ON = 0xFFFFFFFF;
