@@ -1,16 +1,15 @@
-#include "core/cpu.h"
-#include "core/rom.h"
+#include "SDL2/SDL.h"
+
+#include "core/cpu.cpp"
+#include "core/rom.cpp"
+#include "core/display.cpp"
 
 int main(int argc, char *argv[]) {
-    cpu *cpu = cpu::getInstance();
-    cpu->init();
-    if (argc != 1) {
-        std::cerr << "Usage: chaos.exe <rom_dir>" << std::endl;
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        std::cerr << "Error: Couldn't init SDL. Reason: " << SDL_GetError();
         return -1;
     }
-    rom rom(argv[1]);
-    cpu->load_rom(rom);
-    while(true){
-        cpu->cycle();
-    }
+    display display("CH80S", constants::SCREEN_WIDTH * constants::SCALE, constants::SCREEN_HEIGHT * constants::SCALE,false);
+    SDL_Quit();
+    return 0;
 }
