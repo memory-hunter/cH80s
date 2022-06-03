@@ -3,6 +3,7 @@ add_subdirectory(data)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC ../libs/SDL2/x64/include
+        PUBLIC data
         )
 
 target_link_directories(${PROJECT_NAME}
