@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "rom.h"
-#include "../data/data.h"
+#include "data.h"
 
 class cpu {
 private:

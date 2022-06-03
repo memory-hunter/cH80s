@@ -1,6 +1,6 @@
 #include "cpu.h"
 
-cpu *cpu::instance = 0;
+cpu *cpu::instance = nullptr;
 
 cpu::cpu() = default;
 
