@@ -2,6 +2,7 @@
 #define CH80S_DISPLAY_H
 
 #include <SDL2/SDL.h>
+#include <iostream>
 #include <string>
 
 #include "data.h"
@@ -12,12 +13,16 @@ private:
     SDL_Renderer *renderer{};
     SDL_Texture *texture{};
 
+    display(const std::string &title, int width, int height);
+
 public:
-    display(const std::string& title, int width, int height, bool fullscreen);
+    display();
     ~display();
 
     void render(uint32_t screen[constants::SCREEN_WIDTH * constants::SCREEN_HEIGHT]);
     void clear();
+
+    SDL_Window *getWindow() const;
 };
 
 

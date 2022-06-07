@@ -8,6 +8,7 @@ cpu *cpu::getInstance() {
     if (instance == nullptr) {
         instance = new cpu();
     }
+    instance->init();
     return instance;
 }
 
@@ -18,6 +19,8 @@ void cpu::init() {
     sp = 0;
     dt = 0;
     st = 0;
+
+    draw_flag = false;
 
     memset(display, constants::P_OFF, sizeof(display));
     memset(stack, 0, sizeof(stack));
@@ -211,6 +214,7 @@ void cpu::cycle() {
     std::cout << std::hex << "PC: " << pc << " OP: " << opcode << " I: " << index << " SP: " << stack[sp] << std::endl;
     fetch();
     pc += 2;
+    draw_flag = false;
     execute();
     update_timers();
 }
@@ -263,6 +267,7 @@ void cpu::draw() {
             }
         }
     }
+    draw_flag = true;
 }
 
 void cpu::illegal() const {

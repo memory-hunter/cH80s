@@ -25,16 +25,18 @@ private:
     uint8_t dt{};
     uint8_t st{};
 
+    bool draw_flag{};
+
     cpu();
 
     static cpu *instance;
+
+    void init();
 
 public:
     static cpu *getInstance();
 
     uint32_t display[constants::SCREEN_HEIGHT * constants::SCREEN_WIDTH]{};
-
-    void init();
 
     void load_rom(rom &rom);
 
