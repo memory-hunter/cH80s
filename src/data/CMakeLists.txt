@@ -1,1 +1,0 @@
-add_library(data data.cpp data.h)

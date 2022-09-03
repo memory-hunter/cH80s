@@ -1,28 +1,15 @@
-add_subdirectory(core)
-add_subdirectory(data)
-add_subdirectory(utils)
+add_executable(${PROJECT_NAME} chaos.cpp)
 
-target_include_directories(${PROJECT_NAME}
-        PUBLIC ../libs/SDL2/x64/include
-        PUBLIC core
-        PUBLIC data
-        PUBLIC utils
-        )
+find_package(SDL2 REQUIRED)
 
-target_link_directories(${PROJECT_NAME}
-        PUBLIC ../libs/SDL2/x64/lib/
-        PUBLIC core
-        PUBLIC data
-        PUBLIC utils
-        )
-
-target_link_libraries(${PROJECT_NAME}
-        cpu
-        data
-        rom
-        display
-        timer
-        mingw32
-        SDL2main
-        SDL2
-        )
+if (SDL2_FOUND)
+    include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src/include)
+    target_include_directories(cH80s PUBLIC ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src/include)
+    add_library(cpu STATIC cpu.cpp)
+    add_library(rom STATIC rom.cpp)
+    add_library(display STATIC display.cpp)
+    add_library(data STATIC data.cpp)
+    add_library(input STATIC input.cpp)
+    add_library(timer STATIC timer.cpp)
+    target_link_libraries(cH80s PRIVATE ${SDL2_LIBRARIES} cpu data display rom input timer mingw32 SDL2main SDL2)
+endif ()
