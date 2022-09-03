@@ -14,8 +14,8 @@ private:
 
     static input *instance;
 
-    const Uint8 *current_keyboard_state;
-    Uint8 *previous_keyboard_state;
+    const uint8_t *current_keyboard_state;
+    uint8_t *previous_keyboard_state;
 
 public:
     static input *getInstance();

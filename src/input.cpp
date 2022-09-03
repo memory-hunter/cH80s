@@ -2,7 +2,7 @@
 
 input::input() {
     current_keyboard_state = SDL_GetKeyboardState(nullptr);
-    previous_keyboard_state = new Uint8[SDL_NUM_SCANCODES];
+    previous_keyboard_state = new uint8_t[SDL_NUM_SCANCODES];
     memcpy(previous_keyboard_state, current_keyboard_state, SDL_NUM_SCANCODES);
 }
 
@@ -21,7 +21,7 @@ input *input::getInstance() {
 }
 
 bool input::key_pressed(SDL_Scancode sc) {
-    return current_keyboard_state[sc] && !previous_keyboard_state[sc];
+    return current_keyboard_state[sc] && previous_keyboard_state[sc];
 }
 
 void input::update() {
@@ -30,6 +30,7 @@ void input::update() {
 }
 
 void input::handle_input(uint8_t *keys) {
+    memset(keys, 0, 16);
     if (key_pressed(SDL_SCANCODE_1)) {
         keys[0x1] = 1;
     }
@@ -77,10 +78,5 @@ void input::handle_input(uint8_t *keys) {
     }
     if (key_pressed(SDL_SCANCODE_V)) {
         keys[0xF] = 1;
-    }
-    for(int i = 0; i < 16; i++) {
-        if (keys[i] == 1) {
-            std::cout << "Key " << i << " pressed" << std::endl;
-        }
     }
 }
