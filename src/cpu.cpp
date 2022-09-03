@@ -16,12 +16,7 @@ cpu *cpu::getInstance() {
 
 void cpu::init() {
     pc = constants::PC_START;
-    opcode = 0x0000;
-    index = 0;
-    sp = 0;
-    dt = 0;
-    st = 0;
-
+    opcode = index = sp = dt = st = 0;
     draw_flag = false;
 
     memset(display, constants::P_OFF, sizeof(display));
@@ -106,6 +101,11 @@ void cpu::execute() {
                     v[xl(opcode)] += v[yh(opcode)];
                     break;
                 case 0x5:
+                    if(v[yh(opcode)] > v[xl(opcode)]) {
+                        v[0xF] = 0;
+                    } else {
+                        v[0xF] = 1;
+                    }
                     v[xl(opcode)] -= v[yh(opcode)];
                     break;
                 case 0x6:
@@ -212,14 +212,16 @@ void cpu::execute() {
 }
 
 void cpu::gen_random() {
-    v[xl(opcode)] = distribution(generator);
+    v[xl(opcode)] = distribution(generator) && kk(opcode);
 }
 
 void cpu::cycle() {
-    std::cout << std::hex << "PC: " << pc << " OP: " << opcode << " I: " << index << " SP: " << stack[sp] << std::endl;
+    if (debug) {
+        log();
+    }
+    draw_flag = false;
     fetch();
     pc += 2;
-    draw_flag = false;
     execute();
     update_timers();
 }
@@ -239,7 +241,7 @@ void cpu::clear_display() {
 
 void cpu::ret() {
     pc = stack[--sp];
-    stack[sp+1] = 0;
+    stack[sp + 1] = 0;
 }
 
 void cpu::call() {
@@ -256,19 +258,22 @@ void cpu::jump() {
 }
 
 void cpu::draw() {
+    v[0xF] = 0;
     int x = v[xl(opcode)];
     int y = v[yh(opcode)];
-    int height = yl(opcode);
+    int height = yl(opcode) % 16;
     for (int j = 0; j < height; j++) {
         int line = memory[index + j];
         for (int k = 0; k < 8; k++) {
             int pixel = (line & (0x80 >> k));
-            if(pixel) {
-                display[(y + j) * constants::SCREEN_WIDTH + (x + k)] = constants::P_ON;
+            if (pixel) {
+                if (display[((y + j) * constants::SCREEN_WIDTH) + (x + k) % 2048] == constants::P_ON) {
+                    v[0xF] = 1;
+                }
+                display[(y + j) * constants::SCREEN_WIDTH + (x + k) % 2048] ^= constants::P_ON;
             }
         }
     }
-
     draw_flag = true;
 }
 
@@ -281,4 +286,8 @@ void cpu::load_rom(rom &rom) {
     for (int j = 0; j < rom.getSize(); j++) {
         memory[constants::PC_START + j] = rom.getData()[j];
     }
+}
+
+void cpu::log() {
+    std::cout << std::hex << "PC: " << pc << " OP: " << opcode << " I: " << index << " SP: " << stack[sp] << std::endl;
 }
