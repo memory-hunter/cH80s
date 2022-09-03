@@ -16,11 +16,13 @@ int main(int argc, char *argv[]) {
     cpu *cpu = cpu::getInstance();
     input *input = input::getInstance();
     timer timer;
-    rom rom{"pong.ch8"};
+    rom rom{argv[1]};
 
     SDL_Event event;
 
     cpu->load_rom(rom);
+
+    cpu->debug = false;
 
     bool running = true;
     while (running) {
@@ -42,7 +44,7 @@ int main(int argc, char *argv[]) {
         cpu->cycle();
         display.render(cpu->display);
         timer::sync();
-        std::cout << timer.getFps() << std::endl;
+        std::cout << std::dec << timer.getFps() << std::endl;
     }
     SDL_Quit();
     return 0;
