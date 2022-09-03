@@ -7,7 +7,7 @@ display::display(const std::string &title, int width, int height) {
         std::cerr << "Couldn't initialize the window. Reason: " << SDL_GetError() << std::endl;
     }
     std::cout << "Window created" << std::endl;
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1,  SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
         std::cerr << "Couldn't initialize the renderer. Reason: " << SDL_GetError() << std::endl;
     }
