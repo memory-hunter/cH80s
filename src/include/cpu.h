@@ -12,8 +12,8 @@
 #include "rom.h"
 #include "data.h"
 
-
 class cpu {
+
 private:
     uint8_t memory[constants::MEMORY_SIZE]{};
     uint8_t v[16]{};
@@ -33,8 +33,6 @@ private:
 
     static cpu *instance;
 
-    void init();
-
     std::default_random_engine generator;
 
     std::uniform_int_distribution<> distribution;
@@ -45,6 +43,11 @@ public:
     uint32_t display[constants::SCREEN_HEIGHT * constants::SCREEN_WIDTH]{};
     uint8_t keys[16]{};
     bool draw_flag{};
+    bool debug = true;
+
+    void log();
+
+    void init();
 
     void load_rom(rom &rom);
 
