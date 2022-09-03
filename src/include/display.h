@@ -24,8 +24,6 @@ public:
 
     void render(uint32_t screen[constants::SCREEN_WIDTH * constants::SCREEN_HEIGHT]);
 
-    void clear();
-
     SDL_Window *getWindow() const;
 };
 
