@@ -20,7 +20,8 @@ namespace constants {
     constexpr uint32_t PC_START = 0x200;
     constexpr uint64_t P_ON = 0xFFFFFFFF;
     constexpr uint32_t P_OFF = 0x00000000;
-    constexpr uint32_t INTERVAL = 1000 / 60;
+    constexpr uint32_t FPS = 60;
+    constexpr uint32_t INTERVAL = 1000 / FPS;
 }
 
 static uint8_t font_set[80] =
