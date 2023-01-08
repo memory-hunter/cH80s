@@ -23,7 +23,8 @@ public:
     ~display();
 
     void render(uint32_t screen[constants::SCREEN_WIDTH * constants::SCREEN_HEIGHT]);
-    void change_name(const std::string& name);
+
+    void change_name(const std::string &name);
 
     SDL_Window *getWindow() const;
 };

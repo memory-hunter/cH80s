@@ -6,7 +6,7 @@ display::display(const std::string &title, int width, int height) {
     if (window == nullptr) {
         std::cerr << "Couldn't initialize the window. Reason: " << SDL_GetError() << std::endl;
     }
-    std::cout << "Window created" << std::endl;
+    std::cout << "Window created." << std::endl;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
         std::cerr << "Couldn't initialize the renderer. Reason: " << SDL_GetError() << std::endl;
@@ -39,7 +39,7 @@ void display::render(uint32_t *screen) {
     SDL_RenderPresent(renderer);
 }
 
-void display::change_name(const std::string& name) {
+void display::change_name(const std::string &name) {
     if (window != nullptr) {
         SDL_SetWindowTitle(window, name.c_str());
     }
