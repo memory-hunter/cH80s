@@ -2,19 +2,7 @@
 
 cpu *cpu::instance = nullptr;
 
-cpu::cpu() = default;
-
-cpu::~cpu() = default;
-
-cpu *cpu::getInstance() {
-    if (instance == nullptr) {
-        instance = new cpu();
-    }
-    instance->init();
-    return instance;
-}
-
-void cpu::init() {
+cpu::cpu() {
     pc = constants::PC_START;
     opcode = index = sp = dt = st = 0;
     draw_flag = false;
@@ -31,7 +19,18 @@ void cpu::init() {
     generator = std::default_random_engine(std::random_device()());
     distribution = std::uniform_int_distribution<int>(0, 255);
 
-    std::cout << "CHIP-8 Core initialized" << std::endl;
+    std::cout << "CHIP-8 Core initialized." << std::endl;
+}
+
+cpu::~cpu() {
+    std::cout << "CHIP-8 Core destroyed." << std::endl;
+}
+
+cpu *cpu::getInstance() {
+    if (instance == nullptr) {
+        instance = new cpu();
+    }
+    return instance;
 }
 
 void cpu::fetch() {
@@ -101,7 +100,7 @@ void cpu::execute() {
                     v[xl(opcode)] += v[yh(opcode)];
                     break;
                 case 0x5:
-                    if(v[yh(opcode)] > v[xl(opcode)]) {
+                    if (v[yh(opcode)] > v[xl(opcode)]) {
                         v[0xF] = 0;
                     } else {
                         v[0xF] = 1;
@@ -282,9 +281,9 @@ void cpu::illegal() const {
     exit(-1);
 }
 
-void cpu::load_rom(rom &rom) {
-    for (int j = 0; j < rom.getSize(); j++) {
-        memory[constants::PC_START + j] = rom.getData()[j];
+void cpu::load_rom(rom *rom) {
+    for (int j = 0; j < rom->getSize(); j++) {
+        memory[constants::PC_START + j] = rom->getData()[j];
     }
 }
 

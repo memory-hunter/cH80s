@@ -29,8 +29,6 @@ private:
 
     cpu();
 
-    ~cpu();
-
     static cpu *instance;
 
     std::default_random_engine generator;
@@ -38,6 +36,12 @@ private:
     std::uniform_int_distribution<> distribution;
 
 public:
+    ~cpu();
+
+    cpu(const cpu &) = delete;
+
+    void operator=(const cpu &) = delete;
+
     static cpu *getInstance();
 
     uint32_t display[constants::SCREEN_HEIGHT * constants::SCREEN_WIDTH]{};
@@ -47,9 +51,7 @@ public:
 
     void log();
 
-    void init();
-
-    void load_rom(rom &rom);
+    void load_rom(rom *rom);
 
     void fetch();
 
