@@ -2,6 +2,7 @@
 
 timer::timer() {
     past = SDL_GetTicks();
+    speed_multiplier = 2;
 }
 
 void timer::update_delta_time() {
@@ -35,6 +36,14 @@ uint32_t timer::get_fps() const {
 
 void timer::sync(display& display) {
     SDL_Delay(display.INTERVAL);
+}
+
+void timer::set_speed_multiplier(uint32_t speedMultiplier) {
+    speed_multiplier = speedMultiplier;
+}
+
+uint32_t timer::get_speed_multiplier() const {
+    return speed_multiplier;
 }
 
 timer::~timer() = default;

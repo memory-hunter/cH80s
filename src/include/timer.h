@@ -19,6 +19,8 @@ private:
     uint32_t tick_count{};
     uint32_t fps{};
 
+    uint32_t speed_multiplier{};
+
 public:
     uint32_t get_fps() const;
 
@@ -33,9 +35,13 @@ public:
 
     void tick_count_up();
 
+    void set_speed_multiplier(uint32_t speedMultiplier);
+
     bool check_interval(display &display) const;
 
     static void sync(display &display);
+
+    uint32_t get_speed_multiplier() const;
 };
 
 #endif //CHIP8_TIMER_H

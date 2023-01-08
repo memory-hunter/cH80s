@@ -26,6 +26,9 @@ int main(int argc, char *argv[]) {
     cpu->debug = false;
 
     bool running = true;
+
+    timer.set_speed_multiplier(3);
+
     while (running) {
         if (input->key_pressed(SDL_SCANCODE_ESCAPE)) {
             running = false;
@@ -42,7 +45,9 @@ int main(int argc, char *argv[]) {
             input->update();
         }
         input->handle_input(cpu->keys);
-        cpu->cycle();
+        for (int i = 0; i < timer.get_speed_multiplier(); ++i) {
+            cpu->cycle();
+        }
         display.render(cpu->display);
         timer::sync(display);
         display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
