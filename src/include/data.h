@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 #define nnn(opcode) (opcode & 0x0fff)
 #define xh(opcode) ((opcode & 0xf000) >> 12)
@@ -12,19 +13,19 @@
 #define yl(opcode) (opcode & 0x000f)
 #define kk(opcode) (opcode & 0x00ff)
 
-namespace constants {
-    constexpr uint32_t SCREEN_WIDTH = 64;
-    constexpr uint32_t SCREEN_HEIGHT = 32;
-    constexpr uint32_t SCALE = 10;
+namespace info {
     constexpr uint32_t MEMORY_SIZE = 4096;
     constexpr uint32_t PC_START = 0x200;
     constexpr uint64_t P_ON = 0xFFFFFFFF;
     constexpr uint32_t P_OFF = 0x00000000;
-    constexpr uint32_t FPS = 60;
-    constexpr uint32_t INTERVAL = 1000 / FPS;
+    constexpr uint32_t SCREEN_WIDTH = 64;
+    constexpr uint32_t SCREEN_HEIGHT = 32;
+    constexpr uint32_t SCALE = 10;
+    constexpr uint32_t DEFAULT_FPS = 60;
+    constexpr uint32_t DEFAULT_INTERVAL = 1000 / 60;
 }
 
-static uint8_t font_set[80] =
+static std::array<uint8_t, 80> font_set =
         {
                 0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
                 0x20, 0x60, 0x20, 0x20, 0x70, // 1

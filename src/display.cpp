@@ -1,3 +1,4 @@
+#include <array>
 #include "display.h"
 
 display::display(const std::string &title, int width, int height) {
@@ -12,12 +13,23 @@ display::display(const std::string &title, int width, int height) {
         std::cerr << "Couldn't initialize the renderer. Reason: " << SDL_GetError() << std::endl;
     }
     std::cout << "Renderer initialized." << std::endl;
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, constants::SCREEN_WIDTH,
-                                constants::SCREEN_HEIGHT);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, info::SCREEN_WIDTH,
+                                info::SCREEN_HEIGHT);
     if (texture == nullptr) {
         std::cerr << "Couldn't initialize the texture. Reason: " << SDL_GetError() << "\n";
     }
     std::cout << "Texture initialized." << std::endl;
+
+    mode = new SDL_DisplayMode();
+    if(SDL_GetWindowDisplayMode(window, mode)){
+        std::cerr << "Couldn't get the Display Mode. Reason: " << SDL_GetError() << "\n";
+        std::cout << "Using default FPS value.";
+        FPS = info::DEFAULT_FPS;
+        INTERVAL = info::DEFAULT_INTERVAL;
+    }
+
+    FPS = mode->refresh_rate;
+    INTERVAL = 1000 / FPS;
 
     std::cout << "Display initialized." << std::endl;
 }
@@ -29,11 +41,12 @@ display::~display() {
     std::cout << "Renderer destroyed." << std::endl;
     SDL_DestroyWindow(window);
     std::cout << "Window destroyed." << std::endl;
+    delete mode;
     std::cout << "Display destroyed." << std::endl;
 }
 
-void display::render(uint32_t *screen) {
-    SDL_UpdateTexture(texture, nullptr, screen, constants::SCREEN_WIDTH * sizeof(uint32_t));
+void display::render(std::array<uint32_t, info::SCREEN_WIDTH * info::SCREEN_HEIGHT> &screen) {
+    SDL_UpdateTexture(texture, nullptr, &screen, info::SCREEN_WIDTH * sizeof(uint32_t));
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
@@ -49,5 +62,5 @@ SDL_Window *display::getWindow() const {
     return window;
 }
 
-display::display() : display("CH80S", constants::SCREEN_WIDTH * constants::SCALE,
-                             constants::SCREEN_HEIGHT * constants::SCALE) {}
+display::display() : display("CH80S", info::SCREEN_WIDTH * info::SCALE,
+                             info::SCREEN_HEIGHT * info::SCALE) {}

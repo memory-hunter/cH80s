@@ -9,25 +9,26 @@
 #include <utility>
 #include <fstream>
 #include <iostream>
+#include <array>
 
 class rom {
 private:
     std::string path;
-    char *data{};
+    std::array<uint8_t, info::MEMORY_SIZE> data{};
     uint32_t size{};
 
 public:
-    explicit rom(const std::string &path);
+    explicit rom(const std::string &rom_path);
 
     ~rom();
 
-    const std::string &getPath() const;
+    const std::string &get_path() const;
 
-    char *getData() const;
+    std::array<uint8_t, info::MEMORY_SIZE> get_data() const;
 
-    uint32_t getSize() const;
+    uint32_t get_size() const;
 
-    void setPath(const std::string &path);
+    void set_path(const std::string &path);
 };
 
 #endif //CHIP8_ROM_H

@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
     }
 
     display display;
+
     cpu *cpu = cpu::getInstance();
     input *input = input::getInstance();
     timer timer;
@@ -35,15 +36,15 @@ int main(int argc, char *argv[]) {
             }
         }
         timer.update_delta_time();
-        while (timer.check_interval()) {
-            timer.update_fps();
+        while (timer.check_interval(display)) {
+            timer.update_fps(display);
             timer.tick_count_up();
             input->update();
         }
         input->handle_input(cpu->keys);
         cpu->cycle();
         display.render(cpu->display);
-        timer::sync();
+        timer::sync(display);
         display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
     }
 

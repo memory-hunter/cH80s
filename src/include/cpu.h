@@ -8,6 +8,7 @@
 #include <random>
 #include <ios>
 #include <iostream>
+#include <array>
 
 #include "rom.h"
 #include "data.h"
@@ -15,9 +16,10 @@
 class cpu {
 
 private:
-    uint8_t memory[constants::MEMORY_SIZE]{};
-    uint8_t v[16]{};
-    uint16_t stack[16]{};
+    std::array<uint8_t, info::MEMORY_SIZE> memory{};
+
+    std::array<uint8_t, 16> v{};
+    std::array<uint16_t, 16> stack{};
 
     uint16_t index{};
     uint16_t pc{};
@@ -44,8 +46,9 @@ public:
 
     static cpu *getInstance();
 
-    uint32_t display[constants::SCREEN_HEIGHT * constants::SCREEN_WIDTH]{};
-    uint8_t keys[16]{};
+    std::array<uint32_t, info::SCREEN_HEIGHT * info::SCREEN_WIDTH> display{};
+    std::array<uint8_t, 16> keys{};
+
     bool draw_flag{};
     bool debug = true;
 

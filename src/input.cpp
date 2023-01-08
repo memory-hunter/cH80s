@@ -1,15 +1,12 @@
 #include "input.h"
 
 input::input() {
-    current_keyboard_state = SDL_GetKeyboardState(nullptr);
-    previous_keyboard_state = new uint8_t[SDL_NUM_SCANCODES];
-    memcpy(previous_keyboard_state, current_keyboard_state, SDL_NUM_SCANCODES);
+    auto current = SDL_GetKeyboardState(nullptr);
+    current_keyboard_state = std::vector<uint8_t>(current, current + 322);
+    previous_keyboard_state = current_keyboard_state;
 }
 
-input::~input() {
-    delete[] current_keyboard_state;
-    delete[] previous_keyboard_state;
-}
+input::~input() = default;
 
 input* input::instance = nullptr;
 
@@ -25,58 +22,27 @@ bool input::key_pressed(SDL_Scancode sc) {
 }
 
 void input::update() {
-    memcpy(previous_keyboard_state, current_keyboard_state, SDL_NUM_SCANCODES);
-    current_keyboard_state = SDL_GetKeyboardState(nullptr);
+    previous_keyboard_state = current_keyboard_state;
+    auto current = SDL_GetKeyboardState(nullptr);
+    current_keyboard_state = std::vector<uint8_t>(current, current + 322);
 }
 
-void input::handle_input(uint8_t *keys) {
-    memset(keys, 0, 16);
-    if (key_pressed(SDL_SCANCODE_1)) {
-        keys[0x1] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_2)) {
-        keys[0x2] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_3)) {
-        keys[0x3] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_4)) {
-        keys[0xC] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_Q)) {
-        keys[0x4] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_W)) {
-        keys[0x5] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_E)) {
-        keys[0x6] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_R)) {
-        keys[0xD] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_A)) {
-        keys[0x7] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_S)) {
-        keys[0x8] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_D)) {
-        keys[0x9] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_F)) {
-        keys[0xE] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_Z)) {
-        keys[0xA] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_X)) {
-        keys[0x0] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_C)) {
-        keys[0xB] = 1;
-    }
-    if (key_pressed(SDL_SCANCODE_V)) {
-        keys[0xF] = 1;
-    }
+void input::handle_input(std::array<uint8_t, 16> &keys) {
+    keys.fill(0);
+    keys[0] = key_pressed(SDL_SCANCODE_1);
+    keys[1] = key_pressed(SDL_SCANCODE_2);
+    keys[2] = key_pressed(SDL_SCANCODE_3);
+    keys[3] = key_pressed(SDL_SCANCODE_4);
+    keys[4] = key_pressed(SDL_SCANCODE_Q);
+    keys[5] = key_pressed(SDL_SCANCODE_W);
+    keys[6] = key_pressed(SDL_SCANCODE_E);
+    keys[7] = key_pressed(SDL_SCANCODE_R);
+    keys[8] = key_pressed(SDL_SCANCODE_A);
+    keys[9] = key_pressed(SDL_SCANCODE_S);
+    keys[10] = key_pressed(SDL_SCANCODE_D);
+    keys[11] = key_pressed(SDL_SCANCODE_F);
+    keys[12] = key_pressed(SDL_SCANCODE_Z);
+    keys[13] = key_pressed(SDL_SCANCODE_X);
+    keys[14] = key_pressed(SDL_SCANCODE_C);
+    keys[15] = key_pressed(SDL_SCANCODE_V);
 }

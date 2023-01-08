@@ -3,18 +3,16 @@
 cpu *cpu::instance = nullptr;
 
 cpu::cpu() {
-    pc = constants::PC_START;
+    pc = info::PC_START;
     opcode = index = sp = dt = st = 0;
     draw_flag = false;
 
-    memset(display, constants::P_OFF, sizeof(display));
-    memset(stack, 0, sizeof(stack));
-    memset(v, 0, sizeof(v));
-    memset(memory, 0, sizeof(memory));
+    display.fill(info::P_OFF);
+    stack.fill(0);
+    v.fill(0);
+    memory.fill(0);
 
-    for (int j = 0; j < 80; j++) {
-        memory[j] = font_set[j];
-    }
+    std::copy(font_set.begin(), font_set.end(), memory.begin());
 
     generator = std::default_random_engine(std::random_device()());
     distribution = std::uniform_int_distribution<int>(0, 255);
@@ -235,7 +233,7 @@ void cpu::update_timers() {
 }
 
 void cpu::clear_display() {
-    memset(display, constants::P_OFF, sizeof(display));
+    display.fill(info::P_OFF);
 }
 
 void cpu::ret() {
@@ -266,10 +264,10 @@ void cpu::draw() {
         for (int k = 0; k < 8; k++) {
             int pixel = (line & (0x80 >> k));
             if (pixel) {
-                if (display[((y + j) * constants::SCREEN_WIDTH) + (x + k) % 2048] == constants::P_ON) {
+                if (display[((y + j) * info::SCREEN_WIDTH) + (x + k) % 2048] == info::P_ON) {
                     v[0xF] = 1;
                 }
-                display[(y + j) * constants::SCREEN_WIDTH + (x + k) % 2048] ^= constants::P_ON;
+                display[(y + j) * info::SCREEN_WIDTH + (x + k) % 2048] ^= info::P_ON;
             }
         }
     }
@@ -282,9 +280,10 @@ void cpu::illegal() const {
 }
 
 void cpu::load_rom(rom *rom) {
-    for (int j = 0; j < rom->getSize(); j++) {
-        memory[constants::PC_START + j] = rom->getData()[j];
+    for (int j = 0; j < rom->get_size(); j++) {
+        memory[info::PC_START + j] = rom->get_data()[j];
     }
+    std::copy(memory.begin() + info::PC_START, memory.begin() + info::PC_START + rom->get_size(), rom->get_data().begin());
 }
 
 void cpu::log() {
