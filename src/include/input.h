@@ -10,14 +10,18 @@ class input {
 private:
     input();
 
-    ~input();
-
     static input *instance;
 
     const uint8_t *current_keyboard_state;
     uint8_t *previous_keyboard_state;
 
 public:
+    ~input();
+
+    input(const input &) = delete;
+
+    void operator=(const input &) = delete;
+
     static input *getInstance();
 
     bool key_pressed(SDL_Scancode sc);
