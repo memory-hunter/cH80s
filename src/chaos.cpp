@@ -1,4 +1,4 @@
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 
 #include "cpu.h"
 #include "rom.h"
@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
     cpu *cpu = cpu::getInstance();
     input *input = input::getInstance();
     timer timer;
-    rom rom{argv[1]};
+    rom *game = new rom(argv[1]);
 
     SDL_Event event;
 
-    cpu->load_rom(rom);
+    cpu->load_rom(game);
 
     cpu->debug = false;
 
@@ -46,6 +46,11 @@ int main(int argc, char *argv[]) {
         timer::sync();
         display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
     }
+
+    delete input;
+    delete game;
+    delete cpu;
+
     SDL_Quit();
     return 0;
 }
