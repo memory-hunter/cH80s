@@ -29,7 +29,7 @@ bool timer::check_interval() const {
     return update_count >= constants::INTERVAL;
 }
 
-uint32_t timer::getFps() const {
+uint32_t timer::get_fps() const {
     return fps > 0 ? fps : tick_count;
 }
 

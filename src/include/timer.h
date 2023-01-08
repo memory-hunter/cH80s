@@ -18,7 +18,7 @@ private:
     uint32_t tick_count{};
     uint32_t fps{};
 public:
-    uint32_t getFps() const;
+    uint32_t get_fps() const;
 
 public:
     timer();

@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         cpu->cycle();
         display.render(cpu->display);
         timer::sync();
-        std::cout << std::dec << timer.getFps() << std::endl;
+        display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
     }
     SDL_Quit();
     return 0;

@@ -39,6 +39,12 @@ void display::render(uint32_t *screen) {
     SDL_RenderPresent(renderer);
 }
 
+void display::change_name(const std::string& name) {
+    if (window != nullptr) {
+        SDL_SetWindowTitle(window, name.c_str());
+    }
+}
+
 SDL_Window *display::getWindow() const {
     return window;
 }
