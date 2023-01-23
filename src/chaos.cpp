@@ -5,9 +5,10 @@
 #include "display.h"
 #include "timer.h"
 #include "input.h"
+#include "audio.h"
 
 int main(int argc, char *argv[]) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         std::cerr << "Error: Couldn't init SDL. Reason: " << SDL_GetError();
         return -1;
     }
@@ -15,8 +16,9 @@ int main(int argc, char *argv[]) {
     display display;
 
     cpu *cpu = cpu::getInstance();
-    input *input = input::getInstance();
     timer timer;
+    input *input = input::getInstance();
+    audio audio;
     rom *game = new rom(argv[1]);
 
     SDL_Event event;
