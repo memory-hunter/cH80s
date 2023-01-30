@@ -23,8 +23,9 @@ namespace info {
     constexpr uint32_t SCALE = 10;
     constexpr uint32_t DEFAULT_FPS = 60;
     constexpr uint32_t DEFAULT_INTERVAL = 1000 / 60;
-    constexpr uint32_t DEFAULT_FREQUENCY = 440;
+    constexpr uint32_t DEFAULT_FREQUENCY = 500;
     constexpr uint32_t DEFAULT_SAMPLE_RATE = 44100;
+    constexpr uint32_t DEFAULT_AMP = 28000;
 }
 
 static std::array<uint8_t, 80> font_set =
