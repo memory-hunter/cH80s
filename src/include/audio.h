@@ -10,28 +10,24 @@
 
 class audio {
 
-    static int32_t sample_rate, frequency;
-    static uint64_t samples_played;
+    int32_t sample_rate, frequency, amplitude;
+    int32_t sample_index{};
 
     SDL_AudioSpec have{}, want{};
     SDL_AudioDeviceID device{};
 
     static void audio_callback(void *data, uint8_t *buffer, int length);
 
-    void play() const;
-
-    void stop() const;
-
 public:
     audio();
 
-    explicit audio(int32_t freq);
-
-    audio(int32_t freq, int32_t rt);
+    audio(int32_t freq, int32_t rt, int32_t amp);
 
     ~audio();
 
-    void play_sound(uint32_t duration);
+    void play() const;
+
+    void stop() const;
 };
 
 
