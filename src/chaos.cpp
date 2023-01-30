@@ -19,9 +19,11 @@ int main(int argc, char *argv[]) {
     timer timer;
     input *input = input::getInstance();
     audio audio;
+
     rom *game = new rom(argv[1]);
 
     SDL_Event event;
+    cpu->set_sound(audio);
 
     cpu->load_rom(game);
 
@@ -29,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     bool running = true;
 
-    timer.set_speed_multiplier(3);
+    timer.set_speed_multiplier(10);
 
     while (running) {
         if (input->key_pressed(SDL_SCANCODE_ESCAPE)) {
