@@ -228,7 +228,11 @@ void cpu::update_timers() {
         dt--;
     }
     if (st > 0) {
+        sound.play();
         st--;
+    }
+    else {
+        sound.stop();
     }
 }
 
@@ -288,4 +292,12 @@ void cpu::load_rom(rom *rom) {
 
 void cpu::log() {
     std::cout << std::hex << "PC: " << pc << " OP: " << opcode << " I: " << index << " SP: " << stack[sp] << std::endl;
+}
+
+const audio &cpu::get_sound() const {
+    return sound;
+}
+
+void cpu::set_sound(const audio &src) {
+    cpu::sound = src;
 }

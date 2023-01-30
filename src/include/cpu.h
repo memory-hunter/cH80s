@@ -12,6 +12,7 @@
 
 #include "rom.h"
 #include "data.h"
+#include "audio.h"
 
 class cpu {
 
@@ -20,6 +21,8 @@ private:
 
     std::array<uint8_t, 16> v{};
     std::array<uint16_t, 16> stack{};
+
+    audio sound{};
 
     uint16_t index{};
     uint16_t pc{};
@@ -45,6 +48,10 @@ public:
     void operator=(const cpu &) = delete;
 
     static cpu *getInstance();
+
+    const audio &get_sound() const;
+
+    void set_sound(const audio &src);
 
     std::array<uint32_t, info::SCREEN_HEIGHT * info::SCREEN_WIDTH> display{};
     std::array<uint8_t, 16> keys{};
