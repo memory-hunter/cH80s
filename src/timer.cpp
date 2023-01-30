@@ -38,11 +38,11 @@ void timer::sync(display& display) {
     SDL_Delay(display.INTERVAL);
 }
 
-void timer::set_speed_multiplier(uint32_t speedMultiplier) {
+void timer::set_speed_multiplier(double speedMultiplier) {
     speed_multiplier = speedMultiplier;
 }
 
-uint32_t timer::get_speed_multiplier() const {
+double timer::get_speed_multiplier() const {
     return speed_multiplier;
 }
 
