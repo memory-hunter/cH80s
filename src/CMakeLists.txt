@@ -1,6 +1,5 @@
-add_executable(${PROJECT_NAME} chaos.cpp)
-
 find_package(SDL2 REQUIRED)
+add_executable(${PROJECT_NAME} ../chaos.cpp)
 
 if (SDL2_FOUND)
     include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src/include)
