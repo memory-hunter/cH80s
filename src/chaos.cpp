@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     bool running = true;
 
-    timer.set_speed_multiplier(10);
+    timer.set_speed_multiplier(5);
 
     while (running) {
         if (input->key_pressed(SDL_SCANCODE_ESCAPE)) {
