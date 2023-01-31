@@ -33,7 +33,7 @@ void audio::audio_callback(void *data, uint8_t *buffer, int length) {
     auto *current = static_cast<audio *>(data);
     auto* stream = (uint16_t*)buffer;
 
-	for (int i = 0; i < length; i++, current->sample_index++) {
+	for (int i = 0; i < length / 2; i++, current->sample_index++) {
         stream[i] = waves::square(current->sample_index, current->sample_rate, current->frequency, current->amplitude);
 	}
 }
