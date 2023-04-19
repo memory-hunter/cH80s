@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < timer.get_speed_multiplier(); ++i) {
             cpu->cycle();
         }
+        timer.update_timers(cpu);
         display.render(cpu->display);
         timer::sync(display);
         display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
