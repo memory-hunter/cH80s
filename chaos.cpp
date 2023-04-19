@@ -9,24 +9,27 @@
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-        std::cerr << "Error: Couldn't init SDL. Reason: " << SDL_GetError();
+        std::cerr << "Error: Couldn't initialize SDL. Reason: " << SDL_GetError();
         return -1;
     }
 
     display display;
-
     cpu *cpu = cpu::getInstance();
     timer timer;
-    input *input = input::getInstance();
+    input input;
     audio audio;
+
+    if (argc < 2) {
+        std::cout << "Usage: cH80s.exe <ROM file>\n";
+        return -1;
+    }
 
     rom *game = new rom(argv[1]);
 
     SDL_Event event;
+
     cpu->set_sound(audio);
-
     cpu->load_rom(game);
-
     cpu->debug = false;
 
     bool running = true;
@@ -34,7 +37,7 @@ int main(int argc, char *argv[]) {
     timer.set_speed_multiplier(5);
 
     while (running) {
-        if (input->key_pressed(SDL_SCANCODE_ESCAPE)) {
+        if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
             running = false;
         }
         while (SDL_PollEvent(&event)) {
@@ -46,9 +49,9 @@ int main(int argc, char *argv[]) {
         while (timer.check_interval(display)) {
             timer.update_fps(display);
             timer.tick_count_up();
-            input->update();
+            input.update();
         }
-        input->handle_input(cpu->keys);
+        input.handle_input(cpu->keys);
         for (int i = 0; i < timer.get_speed_multiplier(); ++i) {
             cpu->cycle();
         }
@@ -58,7 +61,6 @@ int main(int argc, char *argv[]) {
         display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
     }
 
-    delete input;
     delete game;
     delete cpu;
 
