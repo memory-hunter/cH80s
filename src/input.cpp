@@ -8,7 +8,7 @@ input::input() {
 
 input::~input() = default;
 
-input* input::instance = nullptr;
+input *input::instance = nullptr;
 
 input *input::getInstance() {
     if (instance == nullptr) {

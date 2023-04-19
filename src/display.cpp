@@ -21,7 +21,7 @@ display::display(const std::string &title, int width, int height) {
     std::cout << "Texture initialized." << std::endl;
 
     mode = new SDL_DisplayMode();
-    if(SDL_GetWindowDisplayMode(window, mode)){
+    if (SDL_GetWindowDisplayMode(window, mode)) {
         std::cerr << "Couldn't get the Display Mode. Reason: " << SDL_GetError() << "\n";
         std::cout << "Using default FPS value.";
         FPS = info::DEFAULT_FPS;
