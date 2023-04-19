@@ -220,7 +220,6 @@ void cpu::cycle() {
     fetch();
     pc += 2;
     execute();
-    update_timers();
 }
 
 void cpu::update_timers() {
@@ -230,8 +229,7 @@ void cpu::update_timers() {
     if (st > 0) {
         sound.play();
         st--;
-    }
-    else {
+    } else {
         sound.stop();
     }
 }
@@ -287,7 +285,8 @@ void cpu::load_rom(rom *rom) {
     for (int j = 0; j < rom->get_size(); j++) {
         memory[info::PC_START + j] = rom->get_data()[j];
     }
-    std::copy(memory.begin() + info::PC_START, memory.begin() + info::PC_START + rom->get_size(), rom->get_data().begin());
+    std::copy(memory.begin() + info::PC_START, memory.begin() + info::PC_START + rom->get_size(),
+              rom->get_data().begin());
 }
 
 void cpu::log() {
