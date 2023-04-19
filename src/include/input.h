@@ -10,21 +10,13 @@
 
 class input {
 private:
-    input();
-
-    static input *instance;
-
     std::vector<uint8_t> current_keyboard_state;
     std::vector<uint8_t> previous_keyboard_state;
 
 public:
+    input();
+
     ~input();
-
-    input(const input &) = delete;
-
-    void operator=(const input &) = delete;
-
-    static input *getInstance();
 
     bool key_pressed(SDL_Scancode sc);
 

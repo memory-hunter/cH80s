@@ -8,15 +8,6 @@ input::input() {
 
 input::~input() = default;
 
-input *input::instance = nullptr;
-
-input *input::getInstance() {
-    if (instance == nullptr) {
-        instance = new input();
-    }
-    return instance;
-}
-
 bool input::key_pressed(SDL_Scancode sc) {
     return current_keyboard_state[sc] && previous_keyboard_state[sc];
 }
