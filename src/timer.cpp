@@ -34,7 +34,7 @@ uint32_t timer::get_fps() const {
     return fps > 0 ? fps : tick_count;
 }
 
-void timer::sync(display& display) {
+void timer::sync(display &display) {
     SDL_Delay(display.INTERVAL);
 }
 
@@ -44,6 +44,12 @@ void timer::set_speed_multiplier(double speedMultiplier) {
 
 double timer::get_speed_multiplier() const {
     return speed_multiplier;
+}
+
+void timer::update_timers(cpu *cpu) const {
+    if (delta >= info::SOUND_CLOCK) {
+        cpu->update_timers();
+    }
 }
 
 timer::~timer() = default;

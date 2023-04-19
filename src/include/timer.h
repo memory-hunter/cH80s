@@ -7,6 +7,7 @@
 #include <SDL2/SDL_timer.h>
 #include "data.h"
 #include "display.h"
+#include "cpu.h"
 
 class timer {
 private:
@@ -33,6 +34,8 @@ public:
     void tick_count_up();
 
     void set_speed_multiplier(double speedMultiplier);
+
+    void update_timers(cpu *cpu) const;
 
     bool check_interval(display &display) const;
 
