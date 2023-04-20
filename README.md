@@ -1,5 +1,5 @@
 # cH80s
-Simply another CHIP-8 emulator, written in C++ for personal practice and because I love emulators
+Simply another CHIP-8 emulator, written in C++ for personal practice and because I love emulators, with sound generation.
 
 ## Build
 First, clone the repository:
