@@ -13,31 +13,31 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    display display;
-    cpu *cpu = cpu::getInstance();
-    timer timer;
-    input input;
-    audio audio;
+    std::unique_ptr<display> display = std::make_unique<class display>();
+    std::shared_ptr<cpu> cpu = cpu::getInstance();
+    std::unique_ptr<timer> timer = std::make_unique<class timer>();
+    std::unique_ptr<input> input = std::make_unique<class input>();
+    std::unique_ptr<audio> audio = std::make_unique<class audio>();
 
     if (argc < 2) {
         std::cout << "Usage: cH80s.exe <ROM file>\n";
         return -1;
     }
 
-    rom *game = new rom(argv[1]);
+    std::shared_ptr<rom> game = std::make_shared<rom>(argv[1]);
 
     SDL_Event event;
 
-    cpu->set_sound(audio);
+    cpu->set_sound(*audio);
     cpu->load_rom(game);
-    cpu->debug = false;
+    cpu->debug = true;
 
     bool running = true;
 
-    timer.set_speed_multiplier(5);
+    timer->set_speed_multiplier(5);
 
     while (running) {
-        if (input.key_pressed(SDL_SCANCODE_ESCAPE)) {
+        if (input->key_pressed(SDL_SCANCODE_ESCAPE)) {
             running = false;
         }
         while (SDL_PollEvent(&event)) {
@@ -45,24 +45,21 @@ int main(int argc, char *argv[]) {
                 running = false;
             }
         }
-        timer.update_delta_time();
-        while (timer.check_interval(display)) {
-            timer.update_fps(display);
-            timer.tick_count_up();
-            input.update();
+        timer->update_delta_time();
+        while (timer->check_interval(*display)) {
+            timer->update_fps(*display);
+            timer->tick_count_up();
+            input->update();
         }
-        input.handle_input(cpu->keys);
-        for (int i = 0; i < timer.get_speed_multiplier(); ++i) {
+        input->handle_input(cpu->keys);
+        for (int i = 0; i < timer->get_speed_multiplier(); ++i) {
             cpu->cycle();
         }
-        timer.update_timers(cpu);
-        display.render(cpu->display);
-        timer::sync(display);
-        display.change_name("CH80S - " + std::to_string(timer.get_fps()) + " FPS");
+        timer->update_timers(cpu);
+        display->render(cpu->display);
+        timer::sync(*display);
+        display->change_name("CH80S - " + std::to_string(timer->get_fps()) + " FPS");
     }
-
-    delete game;
-    delete cpu;
 
     SDL_Quit();
     return 0;
