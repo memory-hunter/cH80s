@@ -24,12 +24,12 @@ display::display(const std::string &title, int width, int height) {
     if (SDL_GetWindowDisplayMode(window, mode)) {
         std::cerr << "Couldn't get the Display Mode. Reason: " << SDL_GetError() << "\n";
         std::cout << "Using default FPS value.";
-        FPS = info::DEFAULT_FPS;
-        INTERVAL = info::DEFAULT_INTERVAL;
+        fps = info::DEFAULT_FPS;
+        interval = info::DEFAULT_INTERVAL;
     }
 
-    FPS = mode->refresh_rate;
-    INTERVAL = 1000 / FPS;
+    fps = mode->refresh_rate;
+    interval = 1000 / fps;
 
     std::cout << "Display initialized." << std::endl;
 }
@@ -56,10 +56,6 @@ void display::change_name(const std::string &name) {
     if (window != nullptr) {
         SDL_SetWindowTitle(window, name.c_str());
     }
-}
-
-SDL_Window *display::getWindow() const {
-    return window;
 }
 
 display::display() : display("CH80S", info::SCREEN_WIDTH * info::SCALE,

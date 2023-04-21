@@ -16,7 +16,6 @@ private:
     SDL_Texture *texture{};
     SDL_DisplayMode *mode;
 
-
     display(const std::string &title, int width, int height);
 
 public:
@@ -24,14 +23,12 @@ public:
 
     ~display();
 
-    uint32_t FPS;
-    uint32_t INTERVAL;
+    uint32_t fps;
+    uint32_t interval;
 
     void render(std::array<uint32_t, info::SCREEN_WIDTH * info::SCREEN_HEIGHT> &screen);
 
     void change_name(const std::string &name);
-
-    SDL_Window *getWindow() const;
 };
 
 
