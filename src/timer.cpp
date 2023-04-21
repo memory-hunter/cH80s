@@ -18,7 +18,7 @@ void timer::tick_count_up() {
 }
 
 void timer::update_fps(display &display) {
-    update_count -= display.INTERVAL;
+    update_count -= display.interval;
     if (frame_count >= 1000) {
         fps = tick_count;
         tick_count = 0;
@@ -27,7 +27,7 @@ void timer::update_fps(display &display) {
 }
 
 bool timer::check_interval(display &display) const {
-    return update_count >= display.INTERVAL;
+    return update_count >= display.interval;
 }
 
 uint32_t timer::get_fps() const {
@@ -35,7 +35,7 @@ uint32_t timer::get_fps() const {
 }
 
 void timer::sync(display &display) {
-    SDL_Delay(display.INTERVAL);
+    SDL_Delay(display.interval);
 }
 
 void timer::set_speed_multiplier(double speedMultiplier) {
@@ -46,7 +46,7 @@ double timer::get_speed_multiplier() const {
     return speed_multiplier;
 }
 
-void timer::update_timers(cpu *cpu) const {
+void timer::update_timers(const std::shared_ptr<cpu> &cpu) const {
     if (delta >= info::SOUND_CLOCK) {
         cpu->update_timers();
     }

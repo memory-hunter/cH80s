@@ -35,7 +35,7 @@ public:
 
     void set_speed_multiplier(double speedMultiplier);
 
-    void update_timers(cpu *cpu) const;
+    void update_timers(const std::shared_ptr<cpu>& cpu) const;
 
     bool check_interval(display &display) const;
 

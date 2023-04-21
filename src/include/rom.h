@@ -10,6 +10,8 @@
 #include <fstream>
 #include <iostream>
 #include <array>
+#include <memory>
+#include <utility>
 
 class rom {
 private:
@@ -18,17 +20,13 @@ private:
     uint32_t size{};
 
 public:
-    explicit rom(const std::string &rom_path);
+    explicit rom(std::string rom_path);
 
     ~rom();
 
-    const std::string &get_path() const;
+    [[nodiscard]] std::array<uint8_t, info::MEMORY_SIZE> get_data() const;
 
-    std::array<uint8_t, info::MEMORY_SIZE> get_data() const;
-
-    uint32_t get_size() const;
-
-    void set_path(const std::string &path);
+    [[nodiscard]] uint32_t get_size() const;
 };
 
 #endif //CHIP8_ROM_H
