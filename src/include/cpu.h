@@ -9,6 +9,7 @@
 #include <ios>
 #include <iostream>
 #include <array>
+#include <memory>
 
 #include "rom.h"
 #include "data.h"
@@ -34,11 +35,11 @@ private:
 
     cpu();
 
-    static cpu *instance;
+    static std::shared_ptr<cpu> instance;
 
     std::default_random_engine generator;
 
-    std::uniform_int_distribution<> distribution;
+    std::uniform_int_distribution<uint8_t> distribution;
 
 public:
     ~cpu();
@@ -47,9 +48,7 @@ public:
 
     void operator=(const cpu &) = delete;
 
-    static cpu *getInstance();
-
-    const audio &get_sound() const;
+    static std::shared_ptr<cpu> getInstance();
 
     void set_sound(const audio &src);
 
@@ -59,9 +58,7 @@ public:
     bool draw_flag{};
     bool debug = true;
 
-    void log();
-
-    void load_rom(rom *rom);
+    void load_rom(const std::shared_ptr<rom>& rom);
 
     void fetch();
 
@@ -85,7 +82,11 @@ public:
 
     void draw();
 
-    void illegal() const;
+    void illegal();
+
+    void log();
+
+    void dump_memory();
 };
 
 #endif //CHIP8_CPU_H

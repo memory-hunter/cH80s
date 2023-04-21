@@ -1,6 +1,9 @@
+#include <algorithm>
+#include <sstream>
+#include <iomanip>
 #include "cpu.h"
 
-cpu *cpu::instance = nullptr;
+std::shared_ptr<cpu> cpu::instance = nullptr;
 
 cpu::cpu() {
     pc = info::PC_START;
@@ -15,7 +18,7 @@ cpu::cpu() {
     std::copy(font_set.begin(), font_set.end(), memory.begin());
 
     generator = std::default_random_engine(std::random_device()());
-    distribution = std::uniform_int_distribution<int>(0, 255);
+    distribution = std::uniform_int_distribution<uint8_t>(0, 255);
 
     std::cout << "CHIP-8 Core initialized." << std::endl;
 }
@@ -24,32 +27,22 @@ cpu::~cpu() {
     std::cout << "CHIP-8 Core destroyed." << std::endl;
 }
 
-cpu *cpu::getInstance() {
-    if (instance == nullptr) {
-        instance = new cpu();
-    }
-    return instance;
-}
-
 void cpu::fetch() {
     opcode = memory[pc] << 8 | memory[pc + 1];
 }
 
 void cpu::execute() {
     switch (xh(opcode)) {
-        default:
-            illegal();
-            break;
         case 0x0:
-            switch (yl(opcode)) {
-                case 0x0:
-                    clear_display();
-                    break;
-                case 0xE:
-                    ret();
-                    break;
+            switch (kk(opcode)) {
                 default:
                     illegal();
+                    break;
+                case 0xE0:
+                    clear_display();
+                    break;
+                case 0xEE:
+                    ret();
                     break;
             }
             break;
@@ -95,23 +88,23 @@ void cpu::execute() {
                     v[xl(opcode)] ^= v[yh(opcode)];
                     break;
                 case 0x4:
+                    v[0xF] = (v[xl(opcode)] + v[yh(opcode)] > 0xFF) ? 1 : 0;
                     v[xl(opcode)] += v[yh(opcode)];
                     break;
                 case 0x5:
-                    if (v[yh(opcode)] > v[xl(opcode)]) {
-                        v[0xF] = 0;
-                    } else {
-                        v[0xF] = 1;
-                    }
+                    v[0xF] = (v[xl(opcode)] > v[yh(opcode)]) ? 1 : 0;
                     v[xl(opcode)] -= v[yh(opcode)];
                     break;
                 case 0x6:
+                    v[0xF] = v[xl(opcode)] & 0x1;
                     v[xl(opcode)] >>= 1;
                     break;
                 case 0x7:
+                    v[0xF] = (v[yh(opcode)] > v[xl(opcode)]) ? 1 : 0;
                     v[xl(opcode)] = v[yh(opcode)] - v[xl(opcode)];
                     break;
                 case 0xE:
+                    v[0xF] = v[xl(opcode)] >> 7;
                     v[xl(opcode)] <<= 1;
                     break;
                 default:
@@ -205,6 +198,9 @@ void cpu::execute() {
                     break;
             }
             break;
+        default:
+            illegal();
+            break;
     }
 }
 
@@ -213,12 +209,16 @@ void cpu::gen_random() {
 }
 
 void cpu::cycle() {
-    if (debug) {
-        log();
+    if (pc > info::MEMORY_SIZE) {
+        std::cerr << "Program counter out of bounds. Exiting..." << std::endl;
+        exit(-1);
     }
     draw_flag = false;
     fetch();
     pc += 2;
+    if (debug) {
+        log();
+    }
     execute();
 }
 
@@ -240,7 +240,6 @@ void cpu::clear_display() {
 
 void cpu::ret() {
     pc = stack[--sp];
-    stack[sp + 1] = 0;
 }
 
 void cpu::call() {
@@ -258,45 +257,73 @@ void cpu::jump() {
 
 void cpu::draw() {
     v[0xF] = 0;
-    int x = v[xl(opcode)];
-    int y = v[yh(opcode)];
-    int height = yl(opcode) % 16;
-    for (int j = 0; j < height; j++) {
-        int line = memory[index + j];
-        for (int k = 0; k < 8; k++) {
-            int pixel = (line & (0x80 >> k));
-            if (pixel) {
-                if (display[((y + j) * info::SCREEN_WIDTH) + (x + k) % 2048] == info::P_ON) {
+    auto x = v[xl(opcode)];
+    auto y = v[yh(opcode)];
+    auto height = yl(opcode);
+    for (int row = 0; row < height; row++) {
+        auto line = memory[index + row];
+        for (int col = 0; col < 8; col++) {
+            if (line & (0x80 >> col)) {
+                uint32_t pixel_index = (y + row) % info::SCREEN_HEIGHT * info::SCREEN_WIDTH + (x + col) % info::SCREEN_WIDTH;
+                if (display[pixel_index] == info::P_ON) {
                     v[0xF] = 1;
                 }
-                display[(y + j) * info::SCREEN_WIDTH + (x + k) % 2048] ^= info::P_ON;
+                display[pixel_index] ^= info::P_ON;
             }
         }
     }
     draw_flag = true;
 }
 
-void cpu::illegal() const {
-    std::cerr << "ERROR: " << std::hex << opcode << " - No such opcode exists. Terminating." << std::dec << std::endl;
+void cpu::illegal() {
+    std::cerr << "ERROR: " << std::hex << std::setw(4) << std::setfill('0') << opcode
+              << " - No such opcode exists. Exiting..." << std::dec << std::endl;
+    dump_memory();
     exit(-1);
 }
 
-void cpu::load_rom(rom *rom) {
-    for (int j = 0; j < rom->get_size(); j++) {
-        memory[info::PC_START + j] = rom->get_data()[j];
-    }
-    std::copy(memory.begin() + info::PC_START, memory.begin() + info::PC_START + rom->get_size(),
-              rom->get_data().begin());
-}
-
 void cpu::log() {
-    std::cout << std::hex << "PC: " << pc << " OP: " << opcode << " I: " << index << " SP: " << stack[sp] << std::endl;
-}
-
-const audio &cpu::get_sound() const {
-    return sound;
+    std::ostringstream oss;
+    std::for_each(stack.begin(), stack.end(), [&oss](uint16_t elem) {
+        oss << std::hex << elem << ", ";
+    });
+    std::string stack_str = oss.str();
+    stack_str.pop_back();
+    stack_str.pop_back();
+    std::cout << "PC: " << std::hex << std::setw(4) << std::setfill('0') << pc
+              << ", OP: " << std::hex << std::setw(4) << std::setfill('0') << opcode
+              << ", I: " << std::hex << std::setw(4) << std::setfill('0') << index
+              << " Stack: " << stack_str << std::endl;
 }
 
 void cpu::set_sound(const audio &src) {
     cpu::sound = src;
 }
+
+std::shared_ptr<cpu> cpu::getInstance() {
+    if (instance == nullptr) {
+        instance = std::shared_ptr<cpu>(new cpu());
+    }
+    return instance;
+}
+
+void cpu::load_rom(const std::shared_ptr<rom> &rom) {
+    auto data = rom->get_data();
+    for (int j = 0; j < rom->get_size(); j++) {
+        memory[info::PC_START + j] = data[j];
+    }
+}
+
+void cpu::dump_memory() {
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0');
+    for (int i = 0; i < info::MEMORY_SIZE; i += 16) {
+        oss << std::setw(4) << i << ": ";
+        for (int j = 0; j < 16; j++) {
+            oss << std::setw(2) << static_cast<int>(memory[i + j]) << " ";
+        }
+        oss << "\n";
+    }
+    std::cout << oss.str() << std::endl;
+}
+
