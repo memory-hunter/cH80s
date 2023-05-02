@@ -21,7 +21,8 @@ int main(int argc, char *argv[]) {
 
     if (argc < 2) {
         std::cout << "Usage: cH80s.exe <ROM file>\n";
-        return -1;
+        std::cin.get();
+        exit(-1);
     }
 
     std::shared_ptr<rom> game = std::make_shared<rom>(argv[1]);
