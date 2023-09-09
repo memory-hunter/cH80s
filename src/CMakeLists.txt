@@ -13,4 +13,11 @@ if (SDL2_FOUND)
     add_library(audio STATIC audio.cpp)
     target_link_libraries(cH80s PRIVATE ${SDL2_LIBRARIES} cpu data display rom input timer audio mingw32 SDL2main SDL2)
     set_target_properties(cH80s PROPERTIES LINK_FLAGS "-static-libgcc -static-libstdc++")
+    if (WIN32)
+        add_custom_command(
+                TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL2::SDL2>" "$<TARGET_FILE_DIR:cH80s>"
+                VERBATIM
+        )
+    endif ()
 endif ()
